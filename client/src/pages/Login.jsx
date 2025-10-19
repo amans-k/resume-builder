@@ -32,8 +32,8 @@ const Login = () => {
     setIsLoading(true)
     
     try {
-      const API_BASE = import.meta.env.VITE_BASE_URL ? `${import.meta.env.VITE_BASE_URL}/api` : 'http://localhost:3000/api';
-      const endpoint = state === "login" ? "/users/login" : "/users/register";
+      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-gilt-six-86.vercel.app';
+      const endpoint = state === "login" ? "/api/users/login" : "/api/users/register";
       
       console.log('🔄 Making API call to:', `${API_BASE}${endpoint}`);
       
