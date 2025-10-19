@@ -23,9 +23,11 @@ const ProfessionalSummaryForm = ({ data, onChange, setResumeData }) => {
             
             console.log("🟡 STEP 2: Making API call to backend...")
             
-            // ✅ Single API call with actual data
+            // ✅ FIXED: Use correct API base URL
+            const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-gilt-six-86.vercel.app';
+            
             const response = await axios.post(
-                'http://localhost:3000/api/ai/enhance-pro-sum', 
+                `${API_BASE}/api/ai/enhance-pro-sum`, 
                 { userContent: data }, 
                 { 
                     headers: { 
