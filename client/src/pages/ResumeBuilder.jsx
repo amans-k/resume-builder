@@ -15,8 +15,8 @@ import ColorPicker from '../components/colorpicker'
 import { useSelector } from 'react-redux'
 
 // Fixed: Using Vite environment variables
-const API_BASE = import.meta.env.VITE_BASE_URL ? `${import.meta.env.VITE_BASE_URL}/api` : 'http://localhost:3000/api';
-
+// ✅ FIXED: Use correct environment variable
+const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-gilt-six-86.vercel.app';
 const ResumeBuilder = () => {
   const { resumeId } = useParams()
   const { token } = useSelector(state => state.auth)
