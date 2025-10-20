@@ -26,13 +26,13 @@ const Login = () => {
     }
   }, [urlState])
 
-  // ✅ FIXED: API call without axios
+  // ✅ FIXED: API call with Render URL
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     
     try {
-      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-gilt-six-86.vercel.app';
+      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com';
       const endpoint = state === "login" ? "/api/users/login" : "/api/users/register";
       
       console.log('🔄 Making API call to:', `${API_BASE}${endpoint}`);
@@ -90,7 +90,6 @@ const Login = () => {
   const switchMode = () => {
     const newState = state === "login" ? "register" : "login";
     setState(newState);
-    // ✅ FIXED: Remove setSearchParams to avoid URL conflicts
     setFormData({ name: '', email: '', password: '' });
   }
 
