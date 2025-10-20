@@ -32,7 +32,7 @@ const Login = () => {
     setIsLoading(true)
     
     try {
-      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com';
+      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com/api';
       const endpoint = state === "login" ? "/api/users/login" : "/api/users/register";
       
       console.log('🔄 Making API call to:', `${API_BASE}${endpoint}`);

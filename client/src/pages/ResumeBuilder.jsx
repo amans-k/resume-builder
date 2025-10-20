@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux'
 
 // Fixed: Using Vite environment variables
 // ✅ FIXED: Use correct environment variable
-const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com';
+const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com/api';
 const ResumeBuilder = () => {
   const { resumeId } = useParams()
   const { token } = useSelector(state => state.auth)
