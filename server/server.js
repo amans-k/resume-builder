@@ -14,10 +14,10 @@ await connectDB();
 
 app.use(express.json());
 
-// ✅ FIXED CORS - Add your exact Netlify URL
+// ✅ UPDATED CORS - Add your Render frontend URL
 app.use(cors({
   origin: [
-    'https://waliresumebuilder.netlify.app', // ✅ Your exact Netlify URL
+    'https://resume-builder-4-34vn.onrender.com', // ✅ Your new Render frontend
     'http://localhost:3000'
   ],
   credentials: true,
