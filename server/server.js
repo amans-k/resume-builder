@@ -15,6 +15,15 @@ await connectDB();
 app.use(express.json());
 app.use(cors());
 
+// ✅ HEALTH ROUTE ADD KARO (Vercel Sleep Fix)
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    message: 'Server is running and awake'
+  });
+});
+
 app.get('/', (req, res) => res.send('Server is live...'));
 
 app.post('/api/debug-test', (req, res) => {
