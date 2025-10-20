@@ -1,7 +1,6 @@
-// client/src/configs/api.js
 import axios from 'axios';
 
-// ✅ SIMPLE FIX: Hardcode for now
+// ✅ CONFIRM: This should be Render URL
 const API_URL = "https://resume-builder-3-xfol.onrender.com";
 
 const api = axios.create({
@@ -11,7 +10,6 @@ const api = axios.create({
   },
 });
 
-// Add interceptors for authentication
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

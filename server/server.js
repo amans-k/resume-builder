@@ -13,13 +13,19 @@ const port = process.env.PORT || 3000;
 await connectDB();
 
 app.use(express.json());
-// ✅ CORS UPDATE - Netlify URL add karo
+
+// ✅ FIXED CORS - Add your exact Netlify URL
 app.use(cors({
-  origin: ['https://your-netlify-app.netlify.app', 'http://localhost:3000'],
-  credentials: true
+  origin: [
+    'https://waliresumebuilder.netlify.app', // ✅ Your exact Netlify URL
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ HEALTH ROUTE (Render ke liye important)
+// ✅ HEALTH ROUTE
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -30,24 +36,12 @@ app.get('/health', (req, res) => {
 
 app.get('/', (req, res) => res.send('Server is live on Render...'));
 
-app.post('/api/debug-test', (req, res) => {
-  console.log("✅✅✅ DIRECT TEST ROUTE HIT! ✅✅✅");
-  console.log("Request body:", req.body);
-  res.json({ 
-    success: true,
-    message: "Direct route working!",
-    enhancedContent: "• Test: Developed applications\n• Test: Collaborated with teams\n• Test: Optimized performance" 
-  });
-});
-
 app.use('/api/users', userRouter);
 app.use('/api/resumes', resumerouter);
 app.use('/api/ai', aiRouter);
 
-// ✅ REMOVE VERCEL CHECK - Directly listen karo
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
 });
 
-// ✅ Export bhi rakh sakte ho agar needed ho
 export default app;
