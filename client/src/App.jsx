@@ -15,29 +15,39 @@ const App = () => {
   const dispatch = useDispatch();
   const { isInitialized } = useSelector((state) => state.auth);
 
-  // ✅ BACKEND AUTO-PING FUNCTION (Render URL Update)
+  // ✅ ROBUST BACKEND PING FUNCTION
   useEffect(() => {
     const pingBackend = async () => {
       try {
-        // ✅ UPDATE: Use Render backend URL instead of Vercel
-        const response = await fetch(`https://resume-builder-3-xfol.onrender.com/health`);
-        const data = await response.json();
-        console.log('✅ Render backend ping successful:', data.message);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        const response = await fetch(`https://resume-builder-3-xfol.onrender.com/health`, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          console.log('✅ Backend health check passed - Status:', response.status);
+        } else {
+          console.log('⚠️ Backend responded with status:', response.status);
+        }
       } catch (error) {
-        console.log('❌ Render backend ping failed:', error.message);
+        if (error.name === 'AbortError') {
+          console.log('❌ Backend request timeout');
+        } else {
+          console.log('❌ Backend unreachable:', error.message);
+        }
       }
     };
 
-    // First ping immediately when app loads
     pingBackend();
-
-    // ✅ UPDATE: Increase interval to 10 minutes (Render doesn't need frequent pings)
     const pingInterval = setInterval(pingBackend, 10 * 60 * 1000);
-
-    // Cleanup interval on component unmount
     return () => clearInterval(pingInterval);
   }, []);
 
+  // ... REST OF YOUR CODE REMAINS SAME
   useEffect(() => {
     const getUserData = async () => {
       const token = localStorage.getItem('token');
