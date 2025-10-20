@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// ✅ CONFIRM: This should be Render URL
 const API_URL = "https://resume-builder-3-xfol.onrender.com";
 
 const api = axios.create({
@@ -8,6 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // ✅ Add timeout
 });
 
 api.interceptors.request.use(
@@ -19,6 +19,23 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// ✅ ADD RESPONSE INTERCEPTOR FOR JSON ERRORS
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // ✅ Check if response is HTML instead of JSON
+    if (error.response && 
+        error.response.headers['content-type']?.includes('text/html') &&
+        error.config.url !== '/health') {
+      console.error('Backend returned HTML instead of JSON for:', error.config.url);
+      return Promise.reject(new Error('Backend server error - please try again later'));
+    }
     return Promise.reject(error);
   }
 );

@@ -47,7 +47,6 @@ const App = () => {
     return () => clearInterval(pingInterval);
   }, []);
 
-  // ... REST OF YOUR CODE REMAINS SAME
   useEffect(() => {
     const getUserData = async () => {
       const token = localStorage.getItem('token');

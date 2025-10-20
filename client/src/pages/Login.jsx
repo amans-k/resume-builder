@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { login } from '../app/features/authslice'
 import toast from 'react-hot-toast'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import api from '../configs/api'
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -26,37 +27,24 @@ const Login = () => {
     }
   }, [urlState])
 
-  // ✅ FIXED: API call with Render URL
+  // ✅ FIXED: Using axios from api.js with proper error handling
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     
     try {
-      const API_BASE = import.meta.env.VITE_SERVER_URL || 'https://resume-builder-3-xfol.onrender.com/api';
       const endpoint = state === "login" ? "/api/users/login" : "/api/users/register";
       
-      console.log('🔄 Making API call to:', `${API_BASE}${endpoint}`);
+      console.log('🔄 Making API call to:', endpoint);
       
-      const response = await fetch(`${API_BASE}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
+      const response = await api.post(endpoint, formData);
       
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}`);
-      }
-
-      if (data.token && data.user) {
+      if (response.data.token && response.data.user) {
         dispatch(login({ 
-          token: data.token, 
-          user: data.user 
+          token: response.data.token, 
+          user: response.data.user 
         }))
-        localStorage.setItem('token', data.token)
+        localStorage.setItem('token', response.data.token)
         toast.success(`Successfully ${state === "login" ? "logged in" : "signed up"}`)
         navigate('/app')
       } else {
@@ -65,15 +53,19 @@ const Login = () => {
     } catch (error) {
       console.error('Login error:', error)
       
-      // ✅ Better error handling
-      if (error.message.includes('401') || error.message.includes('Invalid')) {
+      // ✅ IMPROVED ERROR HANDLING
+      if (error.response?.status === 401) {
         toast.error('Invalid email or password')
-      } else if (error.message.includes('400')) {
+      } else if (error.response?.status === 400) {
         toast.error('Bad request - check your input data')
-      } else if (error.message.includes('409')) {
+      } else if (error.response?.status === 409) {
         toast.error('User already exists with this email')
-      } else if (error.message.includes('Failed to fetch')) {
-        toast.error('Cannot connect to server. Please check if backend is running.')
+      } else if (error.message.includes('Backend server error')) {
+        toast.error('Backend service is temporarily unavailable. Please try again in a few minutes.')
+      } else if (error.code === 'NETWORK_ERROR' || error.message.includes('Failed to fetch')) {
+        toast.error('Cannot connect to server. Please check your internet connection.')
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message)
       } else {
         toast.error(error.message || `Failed to ${state}`)
       }
