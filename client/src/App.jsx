@@ -15,24 +15,24 @@ const App = () => {
   const dispatch = useDispatch();
   const { isInitialized } = useSelector((state) => state.auth);
 
-  // ✅ BACKEND AUTO-PING FUNCTION (Vercel Sleep Fix)
+  // ✅ BACKEND AUTO-PING FUNCTION (Render URL Update)
   useEffect(() => {
     const pingBackend = async () => {
       try {
-        // ✅ Use your actual Vercel backend URL
-        const response = await fetch(`https://resume-builder-gilt-six-86.vercel.app/health`);
+        // ✅ UPDATE: Use Render backend URL instead of Vercel
+        const response = await fetch(`https://resume-builder-3-xfol.onrender.com/health`);
         const data = await response.json();
-        console.log('✅ Backend ping successful:', data.message);
+        console.log('✅ Render backend ping successful:', data.message);
       } catch (error) {
-        console.log('❌ Backend ping failed:', error.message);
+        console.log('❌ Render backend ping failed:', error.message);
       }
     };
 
     // First ping immediately when app loads
     pingBackend();
 
-    // Then ping every 4 minutes to keep backend awake
-    const pingInterval = setInterval(pingBackend, 4 * 60 * 1000);
+    // ✅ UPDATE: Increase interval to 10 minutes (Render doesn't need frequent pings)
+    const pingInterval = setInterval(pingBackend, 10 * 60 * 1000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(pingInterval);

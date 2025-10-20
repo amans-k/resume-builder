@@ -13,18 +13,22 @@ const port = process.env.PORT || 3000;
 await connectDB();
 
 app.use(express.json());
-app.use(cors());
+// ✅ CORS UPDATE - Netlify URL add karo
+app.use(cors({
+  origin: ['https://your-netlify-app.netlify.app', 'http://localhost:3000'],
+  credentials: true
+}));
 
-// ✅ HEALTH ROUTE ADD KARO (Vercel Sleep Fix)
+// ✅ HEALTH ROUTE (Render ke liye important)
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    message: 'Server is running and awake'
+    message: 'Server is running on Render'
   });
 });
 
-app.get('/', (req, res) => res.send('Server is live...'));
+app.get('/', (req, res) => res.send('Server is live on Render...'));
 
 app.post('/api/debug-test', (req, res) => {
   console.log("✅✅✅ DIRECT TEST ROUTE HIT! ✅✅✅");
@@ -40,12 +44,10 @@ app.use('/api/users', userRouter);
 app.use('/api/resumes', resumerouter);
 app.use('/api/ai', aiRouter);
 
-// For Vercel - export the app
-export default app;
+// ✅ REMOVE VERCEL CHECK - Directly listen karo
+app.listen(port, () => {
+  console.log(`🚀 Server is running on port ${port}`);
+});
 
-// For local development
-if (process.env.VERCEL !== '1') {
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
-}
+// ✅ Export bhi rakh sakte ho agar needed ho
+export default app;
